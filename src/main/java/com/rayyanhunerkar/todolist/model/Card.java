@@ -33,6 +33,10 @@ public class Card {
     @JoinColumn(name = "state_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private State state;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User user;
     @Column(name = "createdOn")
     @CreatedDate
     private Date createdOn;
@@ -40,12 +44,13 @@ public class Card {
     @LastModifiedDate
     private Date modifiedOn;
 
-    public Card(UUID id, String title, String description, Date deadline, State state, Date createdOn, Date modifiedOn) {
+    public Card(UUID id, String title, String description, Date deadline, State state, User user, Date createdOn, Date modifiedOn) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.deadline = deadline;
         this.state = state;
+        this.user = user;
         this.createdOn = createdOn;
         this.modifiedOn = modifiedOn;
     }
@@ -58,12 +63,12 @@ public class Card {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Card card = (Card) o;
-        return Objects.equals(id, card.id) && Objects.equals(title, card.title) && Objects.equals(description, card.description) && Objects.equals(deadline, card.deadline) && Objects.equals(state, card.state) && Objects.equals(createdOn, card.createdOn) && Objects.equals(modifiedOn, card.modifiedOn);
+        return Objects.equals(id, card.id) && Objects.equals(title, card.title) && Objects.equals(description, card.description) && Objects.equals(deadline, card.deadline) && Objects.equals(state, card.state) && Objects.equals(user, card.user) && Objects.equals(createdOn, card.createdOn) && Objects.equals(modifiedOn, card.modifiedOn);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, deadline, state, createdOn, modifiedOn);
+        return Objects.hash(id, title, description, deadline, state, user, createdOn, modifiedOn);
     }
 
     @Override
@@ -74,9 +79,18 @@ public class Card {
                 ", description='" + description + '\'' +
                 ", deadline=" + deadline +
                 ", state=" + state +
+                ", user=" + user +
                 ", createdOn=" + createdOn +
                 ", modifiedOn=" + modifiedOn +
                 '}';
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
 

@@ -1,7 +1,6 @@
 package com.rayyanhunerkar.todolist.controller;
 
 import com.rayyanhunerkar.todolist.POJO.Cards.CardRequest;
-import com.rayyanhunerkar.todolist.POJO.Response.Response;
 import com.rayyanhunerkar.todolist.service.CardService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,7 @@ public class CardController {
     }
 
     @GetMapping("/cards")
-    public ResponseEntity<Object> getCards() throws Exception{
+    public ResponseEntity<Object> getCards() throws Exception {
         return new ResponseEntity<>(cardService.getCards(), HttpStatus.OK);
     }
 }
