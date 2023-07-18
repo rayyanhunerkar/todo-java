@@ -2,6 +2,7 @@ package com.rayyanhunerkar.todolist.controller;
 
 import com.rayyanhunerkar.todolist.POJO.State.StateRequest;
 import com.rayyanhunerkar.todolist.service.StateService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class StateController {
+    @Autowired
     private final StateService stateService;
 
     public StateController(StateService stateService) {

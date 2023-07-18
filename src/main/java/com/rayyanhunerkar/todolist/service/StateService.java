@@ -6,6 +6,7 @@ import com.rayyanhunerkar.todolist.POJO.State.StateResponse;
 import com.rayyanhunerkar.todolist.model.State;
 import com.rayyanhunerkar.todolist.repository.CardRepository;
 import com.rayyanhunerkar.todolist.repository.StateRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Service
 public class StateService {
+    @Autowired
     private final StateRepository stateRepository;
 
     public StateService(CardRepository cardRepository, StateRepository stateRepository) {

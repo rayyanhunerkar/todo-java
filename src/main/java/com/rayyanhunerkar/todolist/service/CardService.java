@@ -7,15 +7,20 @@ import com.rayyanhunerkar.todolist.model.Card;
 import com.rayyanhunerkar.todolist.model.State;
 import com.rayyanhunerkar.todolist.repository.CardRepository;
 import com.rayyanhunerkar.todolist.repository.StateRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 
 @Service
 public class CardService {
+    @Autowired
     private final CardRepository cardRepository;
+    @Autowired
     private final StateRepository stateRepository;
 
     public CardService(CardRepository cardRepository, StateRepository stateRepository) {

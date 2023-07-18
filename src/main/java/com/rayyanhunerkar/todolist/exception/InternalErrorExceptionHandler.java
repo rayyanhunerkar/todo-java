@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,7 +27,18 @@ public class InternalErrorExceptionHandler extends ResponseEntityExceptionHandle
         return new ResponseEntity<Error>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(UsernameNotFoundException.class)
     public final ResponseEntity<Error> handleUserNotFoundAllException(Exception ex, WebRequest request) throws Exception {
+        Error errorDetails = new Error(
+                LocalDateTime.now(),
+                ex.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<Error>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserExistsException.class)
+    public final ResponseEntity<Error> handleUserExistsException(Exception ex, WebRequest request) throws Exception {
         Error errorDetails = new Error(
                 LocalDateTime.now(),
                 ex.getMessage(),

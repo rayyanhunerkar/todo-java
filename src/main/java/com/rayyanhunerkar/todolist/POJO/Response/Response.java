@@ -1,6 +1,5 @@
 package com.rayyanhunerkar.todolist.POJO.Response;
 
-import com.rayyanhunerkar.todolist.POJO.Cards.CardResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
