@@ -13,8 +13,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StateRequest {
-
-
     @NotNull
     @NotBlank
     private String name;

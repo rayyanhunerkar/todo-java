@@ -1,9 +1,7 @@
 package com.rayyanhunerkar.todolist.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +14,7 @@ import java.util.UUID;
 @Table(name = "users")
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class User implements UserDetails {
 
@@ -32,9 +31,6 @@ public class User implements UserDetails {
     private String firstName;
     @Column(name = "last_name")
     private String lastName;
-
-    public User() {
-    }
 
     @Override
     public boolean equals(Object o) {

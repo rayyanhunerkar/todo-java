@@ -23,6 +23,10 @@ public class SecurityFilter {
                         authorizeHttpRequests -> authorizeHttpRequests
                                 .requestMatchers("/auth/**")
                                 .permitAll()
+                                .requestMatchers("/swagger-ui/**")
+                                .permitAll()
+                                .requestMatchers("/api-docs/**") // permit Swagger docs to be used by all
+                                .permitAll()
                 )
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();

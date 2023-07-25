@@ -2,14 +2,14 @@ package com.rayyanhunerkar.todolist.service;
 
 import com.rayyanhunerkar.todolist.POJO.Response.Response;
 import com.rayyanhunerkar.todolist.POJO.Users.LoginRequest;
+import com.rayyanhunerkar.todolist.POJO.Users.LoginResponse;
 import com.rayyanhunerkar.todolist.POJO.Users.SignUpRequest;
 import com.rayyanhunerkar.todolist.POJO.Users.SignUpResponse;
 import com.rayyanhunerkar.todolist.exception.UserExistsException;
 import com.rayyanhunerkar.todolist.model.User;
 import com.rayyanhunerkar.todolist.repository.UserRepository;
+import com.rayyanhunerkar.todolist.util.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,16 +22,15 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
 
     @Autowired
-    AuthenticationManager authenticationManager;
+    JwtTokenUtil jwtTokenUtil;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository userRepository;
 
-
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        User newUser;
+
         Optional<User> user = userRepository.findByEmail(
                 username
         );
@@ -50,7 +49,6 @@ public class UserService implements UserDetailsService {
         if (user.isPresent()) {
             throw new UserExistsException("User Already Exists");
         }
-
 
         newUser = userRepository.save(User.builder()
                 .email(request.getEmail())
@@ -76,17 +74,25 @@ public class UserService implements UserDetailsService {
     public Response<Object> loginUser(@NotNull LoginRequest request) throws Exception {
 
         User user = loadUserByUsername(request.getEmail());
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        user.getEmail(),
-                        request.getPassword()
-                )
-        );
+        boolean comparePassword = passwordEncoder.matches(request.getPassword(), user.getPassword());
+        String token = jwtTokenUtil.generateJwtToken(user);
+
+        LoginResponse loginResponse = LoginResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .token(token)
+                .build();
+
+        if (comparePassword) {
+            return Response.builder()
+                    .data(loginResponse)
+                    .message("User Logged in successfully!")
+                    .build();
+        }
 
         return Response.builder()
-                .data("Logged in")
-                .message("User created successfully!")
+                .data("failed")
+                .message("username/password is wrong")
                 .build();
     }
-
 }

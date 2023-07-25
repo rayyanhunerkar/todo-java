@@ -7,6 +7,7 @@ import com.rayyanhunerkar.todolist.model.Card;
 import com.rayyanhunerkar.todolist.model.State;
 import com.rayyanhunerkar.todolist.repository.CardRepository;
 import com.rayyanhunerkar.todolist.repository.StateRepository;
+import com.rayyanhunerkar.todolist.util.validators.jwt.JwtValidationParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,7 @@ public class CardService {
         Card card;
         Optional<State> state;
         State stateEntity;
+        JwtValidationParams jwtValidationParams;
 
         state = stateRepository.findById(
                 cardRequest.getState_id()
