@@ -2,6 +2,8 @@ package com.rayyanhunerkar.todolist.controller;
 
 import com.rayyanhunerkar.todolist.POJO.Cards.CardRequest;
 import com.rayyanhunerkar.todolist.service.CardService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +19,13 @@ public class CardController {
         this.cardService = cardService;
     }
 
+    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
     @PostMapping("/cards")
     public ResponseEntity<Object> createCard(@RequestBody final CardRequest cardRequest) throws Exception {
         return new ResponseEntity<>(cardService.createCard(cardRequest), HttpStatus.OK);
     }
 
+    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
     @GetMapping("/cards")
     public ResponseEntity<Object> getCards() throws Exception {
         return new ResponseEntity<>(cardService.getCards(), HttpStatus.OK);

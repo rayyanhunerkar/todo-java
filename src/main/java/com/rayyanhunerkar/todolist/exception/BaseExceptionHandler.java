@@ -1,6 +1,8 @@
 package com.rayyanhunerkar.todolist.exception;
 
 import com.rayyanhunerkar.todolist.model.Error;
+import io.jsonwebtoken.ExpiredJwtException;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -15,7 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.time.LocalDateTime;
 
 @ControllerAdvice
-public class InternalErrorExceptionHandler extends ResponseEntityExceptionHandler {
+public class BaseExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Error> handleAllException(Exception ex, WebRequest request) throws Exception {
@@ -44,12 +46,22 @@ public class InternalErrorExceptionHandler extends ResponseEntityExceptionHandle
                 ex.getMessage(),
                 request.getDescription(false)
         );
-        return new ResponseEntity<Error>(errorDetails, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({JwtException.class})
+    public final ResponseEntity<Error> handleJwtException(Exception ex, WebRequest request) throws Exception {
+        Error errorDetails = new Error(
+                LocalDateTime.now(),
+                ex.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
     }
 
     @Override()
     public final ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request
+            MethodArgumentNotValidException ex, @NotNull HttpHeaders headers, @NotNull HttpStatusCode status, @NotNull WebRequest request
     ) {
         String errors = "";
         StringBuilder sb = new StringBuilder();
@@ -61,7 +73,8 @@ public class InternalErrorExceptionHandler extends ResponseEntityExceptionHandle
                 errors,
                 request.getDescription(false)
         );
-        return new ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
+
 }
 

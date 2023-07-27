@@ -2,7 +2,9 @@ package com.rayyanhunerkar.todolist.model;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -16,6 +18,8 @@ import java.util.UUID;
 @Entity
 @Builder
 @Table(name = "cards", schema = "public")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Card {
 
     @Id
@@ -43,20 +47,6 @@ public class Card {
     @Column(name = "modifiedOn")
     @LastModifiedDate
     private Date modifiedOn;
-
-    public Card(UUID id, String title, String description, Date deadline, State state, User user, Date createdOn, Date modifiedOn) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.deadline = deadline;
-        this.state = state;
-        this.user = user;
-        this.createdOn = createdOn;
-        this.modifiedOn = modifiedOn;
-    }
-
-    public Card() {
-    }
 
     @Override
     public boolean equals(Object o) {

@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 @Component
 public class JwtTokenUtil implements Serializable {
@@ -26,7 +27,7 @@ public class JwtTokenUtil implements Serializable {
         Map<String, Object> claims = new HashMap<>();
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(user.getEmail())
+                .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
                 .signWith(SignatureAlgorithm.HS512, secret)
@@ -34,14 +35,24 @@ public class JwtTokenUtil implements Serializable {
     }
 
     public Boolean ValidateJwtToken(String token, User user) {
-        String username = getUserIDFromToken(token);
+        String userName = getUserNameFromToken(token);
         Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
         boolean isTokenExpired = claims.getExpiration().before(new Date());
-        return (username.equals(user.getEmail()) && !isTokenExpired);
+        return (userName.equals(user.getUsername()) && !isTokenExpired);
     }
 
-    public String getUserIDFromToken(String token) {
+    public String getUserNameFromToken(String token) {
         final Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
         return claims.getSubject();
     }
+
+    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = getAllClaimsFromToken(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims getAllClaimsFromToken(String token) {
+        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+    }
+
 }

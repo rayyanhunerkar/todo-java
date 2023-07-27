@@ -5,9 +5,10 @@ import com.rayyanhunerkar.todolist.POJO.Cards.CardResponse;
 import com.rayyanhunerkar.todolist.POJO.Response.Response;
 import com.rayyanhunerkar.todolist.model.Card;
 import com.rayyanhunerkar.todolist.model.State;
+import com.rayyanhunerkar.todolist.model.User;
 import com.rayyanhunerkar.todolist.repository.CardRepository;
 import com.rayyanhunerkar.todolist.repository.StateRepository;
-import com.rayyanhunerkar.todolist.util.validators.jwt.JwtValidationParams;
+import com.rayyanhunerkar.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,20 +25,28 @@ public class CardService {
     @Autowired
     private final StateRepository stateRepository;
 
-    public CardService(CardRepository cardRepository, StateRepository stateRepository) {
+    @Autowired
+    private final UserRepository userRepository;
+
+    public CardService(CardRepository cardRepository, StateRepository stateRepository, UserRepository userRepository) {
         this.cardRepository = cardRepository;
         this.stateRepository = stateRepository;
+        this.userRepository = userRepository;
     }
 
     public Response<Object> createCard(final CardRequest cardRequest) throws Exception {
 
         Card card;
         Optional<State> state;
+        Optional<User> user;
         State stateEntity;
-        JwtValidationParams jwtValidationParams;
+        User userEntity;
 
         state = stateRepository.findById(
-                cardRequest.getState_id()
+                cardRequest.getState()
+        );
+        user = userRepository.findById(
+                cardRequest.getUser()
         );
 
         if (state.isEmpty()) {
@@ -46,7 +55,14 @@ public class CardService {
                     .build();
         }
 
+        if (user.isEmpty()) {
+            return Response.builder()
+                    .message("User does not exist")
+                    .build();
+        }
+
         stateEntity = state.get();
+        userEntity = user.get();
 
         try {
             card = cardRepository.save(Card.builder()
@@ -54,6 +70,7 @@ public class CardService {
                     .description(cardRequest.getDescription())
                     .deadline(cardRequest.getDeadline())
                     .state(stateEntity)
+                    .user(userEntity)
                     .modifiedOn(new Timestamp(new Date().getTime()))
                     .createdOn(new Date())
                     .build()

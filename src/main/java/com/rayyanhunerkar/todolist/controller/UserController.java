@@ -5,8 +5,6 @@ import com.rayyanhunerkar.todolist.POJO.Users.SignUpRequest;
 import com.rayyanhunerkar.todolist.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<Object> login(@RequestBody LoginRequest request) throws Exception {
+    public ResponseEntity<Object> login(@RequestBody @NotNull LoginRequest request) throws Exception {
         return new ResponseEntity<>(userService.loginUser(request), HttpStatus.OK);
     }
 

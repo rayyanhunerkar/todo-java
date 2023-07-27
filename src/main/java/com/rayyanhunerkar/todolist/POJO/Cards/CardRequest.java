@@ -22,5 +22,7 @@ public class CardRequest {
     private String description;
     private Date deadline;
     @NotNull
-    private UUID state_id;
+    private UUID state;
+    @NotNull
+    private UUID user;
 }
