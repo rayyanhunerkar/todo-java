@@ -30,6 +30,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         if (isPermittedEndpoint(request)) {
             filterChain.doFilter(request, response);
+            return;
         }
         final String requestToken = request.getHeader("Authorization");
         String userName;

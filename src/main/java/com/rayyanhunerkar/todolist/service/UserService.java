@@ -75,15 +75,15 @@ public class UserService implements UserDetailsService {
 
         User user = loadUserByUsername(request.getEmail());
         boolean comparePassword = passwordEncoder.matches(request.getPassword(), user.getPassword());
-        String token = jwtTokenUtil.generateJwtToken(user);
-
-        LoginResponse loginResponse = LoginResponse.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .token(token)
-                .build();
 
         if (comparePassword) {
+            String token = jwtTokenUtil.generateJwtToken(user);
+            LoginResponse loginResponse = LoginResponse.builder()
+                    .id(user.getId())
+                    .email(user.getEmail())
+                    .token(token)
+                    .build();
+
             return Response.builder()
                     .data(loginResponse)
                     .message("User Logged in successfully!")
@@ -91,7 +91,6 @@ public class UserService implements UserDetailsService {
         }
 
         return Response.builder()
-                .data("failed")
                 .message("username/password is wrong")
                 .build();
     }

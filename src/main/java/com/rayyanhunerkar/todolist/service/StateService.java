@@ -1,6 +1,8 @@
 package com.rayyanhunerkar.todolist.service;
 
+import com.rayyanhunerkar.todolist.POJO.Cards.CardResponse;
 import com.rayyanhunerkar.todolist.POJO.Response.Response;
+import com.rayyanhunerkar.todolist.POJO.State.StateNoTasksResponse;
 import com.rayyanhunerkar.todolist.POJO.State.StateRequest;
 import com.rayyanhunerkar.todolist.POJO.State.StateResponse;
 import com.rayyanhunerkar.todolist.model.Card;
@@ -31,7 +33,7 @@ public class StateService {
     public Response<Object> createState(final StateRequest stateRequest) throws Exception {
 
         State state;
-        StateResponse response;
+        StateNoTasksResponse response;
 
         state = stateRepository.save(State.builder()
                 .name(stateRequest.getName())
@@ -41,8 +43,9 @@ public class StateService {
                 .build()
         );
 
-        response = StateResponse.builder()
+        response = StateNoTasksResponse.builder()
                 .id(state.getId())
+                .name(state.getName())
                 .description(state.getDescription())
                 .createdOn(state.getCreatedOn())
                 .modifiedOn(state.getModifiedOn())
@@ -55,20 +58,33 @@ public class StateService {
     }
 
     public Response<Object> getStates() throws Exception {
-        List<Card> cards;
-
         List<State> states = stateRepository.findAll();
 
         List<StateResponse> response = states.stream()
                 .map(
-                        state -> StateResponse.builder()
-                                .id(state.getId())
-                                .name(state.getName())
-                                .description(state.getDescription())
-                                .tasks(cardRepository.findAllByStateId(state.getId()))
-                                .createdOn(state.getCreatedOn())
-                                .modifiedOn(state.getModifiedOn())
-                                .build()
+                        state -> {
+                            List<Card> cards = cardRepository.findAllByStateId(state.getId());
+                            List<CardResponse> cardResponse = cards.stream().map(
+                                    card -> {
+                                        return CardResponse.builder()
+                                                .id(card.getId())
+                                                .title(card.getTitle())
+                                                .description(card.getDescription())
+                                                .deadline(card.getDeadline())
+                                                .createdOn(card.getCreatedOn())
+                                                .modifiedOn(card.getModifiedOn())
+                                                .build();
+                                    }
+                            ).toList();
+                            return StateResponse.builder()
+                                    .id(state.getId())
+                                    .name(state.getName())
+                                    .description(state.getDescription())
+                                    .tasks(cardResponse)
+                                    .createdOn(state.getCreatedOn())
+                                    .modifiedOn(state.getModifiedOn())
+                                    .build();
+                        }
                 ).toList();
 
         return Response.builder()
@@ -79,20 +95,36 @@ public class StateService {
 
     public Response<Object> getState(UUID id) throws Exception {
         Optional<State> state;
-        List<Card> card;
+        List<Card> cards;
 
         state = stateRepository.findById(id);
+
         if (state.isEmpty()) {
             return null;
         }
-        card = cardRepository.findAllByStateId(id);
+
+        cards = cardRepository.findAllByStateId(id);
+
+        List<CardResponse> cardResponse = cards.stream().map(
+                card -> {
+                    return CardResponse.builder()
+                            .id(card.getId())
+                            .title(card.getTitle())
+                            .description(card.getDescription())
+                            .deadline(card.getDeadline())
+                            .createdOn(card.getCreatedOn())
+                            .modifiedOn(card.getModifiedOn())
+                            .build();
+                }
+        ).toList();
+
         State stateEntity = state.get();
 
         StateResponse response = StateResponse.builder()
                 .id(stateEntity.getId())
                 .name(stateEntity.getName())
                 .description(stateEntity.getDescription())
-                .tasks(card)
+                .tasks(cardResponse)
                 .createdOn(stateEntity.getCreatedOn())
                 .modifiedOn(stateEntity.getModifiedOn())
                 .build();
