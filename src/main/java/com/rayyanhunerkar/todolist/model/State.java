@@ -14,12 +14,9 @@ import java.util.UUID;
 
 @Entity
 @Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-@EqualsAndHashCode
-@Getter
-@Setter
 @Table(name = "states", schema = "public")
 public class State {
 

@@ -8,8 +8,9 @@ import com.rayyanhunerkar.todolist.model.State;
 import com.rayyanhunerkar.todolist.model.User;
 import com.rayyanhunerkar.todolist.repository.CardRepository;
 import com.rayyanhunerkar.todolist.repository.StateRepository;
-import com.rayyanhunerkar.todolist.repository.UserRepository;
+import com.rayyanhunerkar.todolist.util.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -26,27 +27,22 @@ public class CardService {
     private final StateRepository stateRepository;
 
     @Autowired
-    private final UserRepository userRepository;
+    private JwtTokenUtil jwtTokenUtil;
 
-    public CardService(CardRepository cardRepository, StateRepository stateRepository, UserRepository userRepository) {
+    public CardService(CardRepository cardRepository, StateRepository stateRepository) {
         this.cardRepository = cardRepository;
         this.stateRepository = stateRepository;
-        this.userRepository = userRepository;
     }
 
     public Response<Object> createCard(final CardRequest cardRequest) throws Exception {
 
         Card card;
         Optional<State> state;
-        Optional<User> user;
         State stateEntity;
-        User userEntity;
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         state = stateRepository.findById(
                 cardRequest.getState()
-        );
-        user = userRepository.findById(
-                cardRequest.getUser()
         );
 
         if (state.isEmpty()) {
@@ -55,14 +51,7 @@ public class CardService {
                     .build();
         }
 
-        if (user.isEmpty()) {
-            return Response.builder()
-                    .message("User does not exist")
-                    .build();
-        }
-
         stateEntity = state.get();
-        userEntity = user.get();
 
         try {
             card = cardRepository.save(Card.builder()
@@ -70,7 +59,7 @@ public class CardService {
                     .description(cardRequest.getDescription())
                     .deadline(cardRequest.getDeadline())
                     .state(stateEntity)
-                    .user(userEntity)
+                    .createdBy(user)
                     .modifiedOn(new Timestamp(new Date().getTime()))
                     .createdOn(new Date())
                     .build()
@@ -85,6 +74,7 @@ public class CardService {
                 .title(card.getTitle())
                 .description(card.getDescription())
                 .deadline(card.getDeadline())
+                .createdBy(card.getCreatedBy().getId())
                 .state_id(stateEntity.getId())
                 .createdOn(card.getCreatedOn())
                 .modifiedOn(card.getModifiedOn())

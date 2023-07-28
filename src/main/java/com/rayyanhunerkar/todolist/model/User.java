@@ -7,15 +7,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users")
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Table(name = "users")
 public class User implements UserDetails {
 
     @Id
@@ -33,49 +32,8 @@ public class User implements UserDetails {
     private String lastName;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id)
-                && Objects.equals(email, user.email)
-                && Objects.equals(password, user.password)
-                && Objects.equals(firstName, user.firstName)
-                && Objects.equals(lastName, user.lastName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, email, password, firstName, lastName);
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     @Override
@@ -101,32 +59,5 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                '}';
     }
 }

@@ -18,6 +18,7 @@ public class CardResponse {
     private String title;
     private String description;
     private Date deadline;
+    private UUID createdBy;
     private UUID state_id;
     private Date createdOn;
     private Date modifiedOn;

@@ -61,30 +61,31 @@ public class StateService {
         List<State> states = stateRepository.findAll();
 
         List<StateResponse> response = states.stream()
-                .map(
-                        state -> {
-                            List<Card> cards = cardRepository.findAllByStateId(state.getId());
-                            List<CardResponse> cardResponse = cards.stream().map(
-                                    card -> {
-                                        return CardResponse.builder()
-                                                .id(card.getId())
-                                                .title(card.getTitle())
-                                                .description(card.getDescription())
-                                                .deadline(card.getDeadline())
-                                                .createdOn(card.getCreatedOn())
-                                                .modifiedOn(card.getModifiedOn())
-                                                .build();
-                                    }
-                            ).toList();
-                            return StateResponse.builder()
-                                    .id(state.getId())
-                                    .name(state.getName())
-                                    .description(state.getDescription())
-                                    .tasks(cardResponse)
-                                    .createdOn(state.getCreatedOn())
-                                    .modifiedOn(state.getModifiedOn())
-                                    .build();
+                .map(state -> {
+                    List<Card> cards = cardRepository.findAllByStateId(state.getId());
+                    List<CardResponse> cardResponse = cards.stream().map(
+                        card -> CardResponse.builder()
+                            .id(card.getId())
+                            .title(card.getTitle())
+                            .description(card.getDescription())
+                            .deadline(card.getDeadline())
+                            .createdBy(card.getCreatedBy().getId())
+                            .createdOn(card.getCreatedOn())
+                            .modifiedOn(card.getModifiedOn())
+                            .build()
+
+                    ).toList();
+
+                    return StateResponse.builder()
+                        .id(state.getId())
+                        .name(state.getName())
+                        .description(state.getDescription())
+                        .tasks(cardResponse)
+                        .createdOn(state.getCreatedOn())
+                        .modifiedOn(state.getModifiedOn())
+                        .build();
                         }
+
                 ).toList();
 
         return Response.builder()
@@ -106,16 +107,15 @@ public class StateService {
         cards = cardRepository.findAllByStateId(id);
 
         List<CardResponse> cardResponse = cards.stream().map(
-                card -> {
-                    return CardResponse.builder()
-                            .id(card.getId())
-                            .title(card.getTitle())
-                            .description(card.getDescription())
-                            .deadline(card.getDeadline())
-                            .createdOn(card.getCreatedOn())
-                            .modifiedOn(card.getModifiedOn())
-                            .build();
-                }
+            card -> CardResponse.builder()
+                .id(card.getId())
+                .title(card.getTitle())
+                .description(card.getDescription())
+                .deadline(card.getDeadline())
+                .createdBy(card.getCreatedBy().getId())
+                .createdOn(card.getCreatedOn())
+                .modifiedOn(card.getModifiedOn())
+                .build()
         ).toList();
 
         State stateEntity = state.get();

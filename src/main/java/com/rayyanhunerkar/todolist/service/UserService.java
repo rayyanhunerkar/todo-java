@@ -10,6 +10,7 @@ import com.rayyanhunerkar.todolist.model.User;
 import com.rayyanhunerkar.todolist.repository.UserRepository;
 import com.rayyanhunerkar.todolist.util.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;

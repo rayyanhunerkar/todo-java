@@ -23,6 +23,4 @@ public class CardRequest {
     private Date deadline;
     @NotNull
     private UUID state;
-    @NotNull
-    private UUID user;
 }
