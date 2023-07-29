@@ -3,10 +3,15 @@ package com.rayyanhunerkar.todolist.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -30,6 +35,16 @@ public class User implements UserDetails {
     private String firstName;
     @Column(name = "last_name")
     private String lastName;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Team team_id;
+    @Column(name = "created_on")
+    @CreatedDate
+    private Date createdOn;
+    @Column(name = "modified_on")
+    @LastModifiedDate
+    private Date modifiedOn;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -39,10 +39,18 @@ public class Card {
     @JoinColumn(name = "created_by")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User createdBy;
-    @Column(name = "createdOn")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_to")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User assignedTo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Team team_id;
+    @Column(name = "created_on")
     @CreatedDate
     private Date createdOn;
-    @Column(name = "modifiedOn")
+    @Column(name = "modified_on")
     @LastModifiedDate
     private Date modifiedOn;
 }

@@ -28,9 +28,6 @@ public class CardService {
     @Autowired
     private final StateRepository stateRepository;
 
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-
     public CardService(CardRepository cardRepository, StateRepository stateRepository) {
         this.cardRepository = cardRepository;
         this.stateRepository = stateRepository;

@@ -37,13 +37,13 @@ public class CardController {
 
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
     @GetMapping("/cards/{id}")
-    public ResponseEntity<Object> getCard(@RequestParam(value = "id") @NotNull String id) throws Exception {
+    public ResponseEntity<Object> getCard(@PathVariable("id") @NotNull String id) throws Exception {
         return new ResponseEntity<>(cardService.getCard(UUID.fromString(id)), HttpStatus.OK);
     }
 
     @PatchMapping("/cards/{id}")
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
-    public ResponseEntity<Object> updateCard(@RequestParam(value = "id") @NotNull String id, @RequestBody final CardUpdateRequest request) throws Exception {
+    public ResponseEntity<Object> updateCard(@PathVariable("id") @NotNull String id, @RequestBody final CardUpdateRequest request) throws Exception {
         return new ResponseEntity<>(cardService.updateCard(UUID.fromString(id), request), HttpStatus.OK);
     }
 

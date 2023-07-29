@@ -36,7 +36,7 @@ public class StateController {
 
     @Operation(security = {@SecurityRequirement(name = "bearer-key")})
     @GetMapping("/states/{id}")
-    public ResponseEntity<Object> getState(@RequestParam(value = "id") @NotNull String id) throws Exception {
+    public ResponseEntity<Object> getState(@PathVariable("id") @NotNull String id) throws Exception {
         return new ResponseEntity<>(stateService.getState(UUID.fromString(id)), HttpStatus.OK);
     }
 }
