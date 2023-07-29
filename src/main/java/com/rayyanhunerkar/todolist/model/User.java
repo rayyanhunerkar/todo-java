@@ -38,7 +38,7 @@ public class User implements UserDetails {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Team team_id;
+    private Team team;
     @Column(name = "created_on")
     @CreatedDate
     private Date createdOn;

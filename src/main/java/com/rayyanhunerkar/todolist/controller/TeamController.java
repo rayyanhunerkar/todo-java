@@ -40,5 +40,11 @@ public class TeamController {
     public ResponseEntity<Object> addTeamMembers(@PathVariable("id") @NotNull String id, @RequestBody @NotNull TeamAddUsersRequest request) throws Exception {
         return new ResponseEntity<>(teamService.addUsersToTeam(UUID.fromString(id), request), HttpStatus.OK);
     }
+
+    @GetMapping("/teams/{id}")
+    @Operation(security = {@SecurityRequirement(name = "bearer-key")})
+    public ResponseEntity<Object> getTeam(@PathVariable("id") @NotNull String id) throws Exception {
+        return new ResponseEntity<>(teamService.getTeam(UUID.fromString(id)), HttpStatus.OK);
+    }
 }
 

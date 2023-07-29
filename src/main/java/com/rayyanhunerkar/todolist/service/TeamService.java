@@ -61,18 +61,50 @@ public class TeamService {
         List<Team> teams = teamRepository.findAll();
 
         List<TeamResponseNoMembers> response = teams.stream().map(
-                team ->
-                        TeamResponseNoMembers.builder()
-                                .id(team.getId())
-                                .name(team.getName())
-                                .createdOn(team.getCreatedOn())
-                                .modifiedOn(team.getModifiedOn())
-                                .build()
+            team ->
+                TeamResponseNoMembers.builder()
+                    .id(team.getId())
+                    .name(team.getName())
+                    .createdOn(team.getCreatedOn())
+                    .modifiedOn(team.getModifiedOn())
+                    .build()
         ).toList();
 
         return Response.builder()
+            .data(response)
+            .message("Teams fetched successfully!")
+            .build();
+    }
+
+    public Response<Object> getTeam(UUID id) throws Exception {
+        List<User> users = userRepository.findAllByTeamId(id);
+        Optional<Team> team = teamRepository.findById(id);
+
+        if (team.isEmpty()) {
+            return null;
+        }
+
+        List<UserBaseResponse> userBaseResponses = users.stream().map(
+                user ->
+                        UserBaseResponse.builder()
+                                .id(user.getId())
+                                .email(user.getEmail())
+                                .firstName(user.getFirstName())
+                                .lastName(user.getLastName())
+                                .build()
+        ).toList();
+
+        TeamResponse response = TeamResponse.builder()
+                .id(team.get().getId())
+                .name(team.get().getName())
+                .users(userBaseResponses)
+                .createdOn(team.get().getCreatedOn())
+                .modifiedOn(team.get().getModifiedOn())
+                .build();
+
+        return Response.builder()
                 .data(response)
-                .message("Teams fetched successfully!")
+                .message("Team retrieved successfully!")
                 .build();
     }
 
@@ -87,33 +119,33 @@ public class TeamService {
         List<User> users = userRepository.findByIdIn(request.getUsers());
 
         users = users.stream().map(
-                user -> {
-                    user.setTeam_id(team.get());
-                    return userRepository.save(user);
-                }
+            user -> {
+                user.setTeam(team.get());
+                return userRepository.save(user);
+            }
         ).toList();
 
         List<UserBaseResponse> userBaseResponses = users.stream().map(
-                user ->
-                        UserBaseResponse.builder()
-                                .id(user.getId())
-                                .email(user.getEmail())
-                                .firstName(user.getFirstName())
-                                .lastName(user.getLastName())
-                                .build()
+            user ->
+                UserBaseResponse.builder()
+                    .id(user.getId())
+                    .email(user.getEmail())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
+                    .build()
         ).toList();
 
         TeamResponse teamResponse = TeamResponse.builder()
-                .id(team.get().getId())
-                .name(team.get().getName())
-                .users(userBaseResponses)
-                .createdOn(team.get().getCreatedOn())
-                .modifiedOn(team.get().getModifiedOn())
-                .build();
+            .id(team.get().getId())
+            .name(team.get().getName())
+            .users(userBaseResponses)
+            .createdOn(team.get().getCreatedOn())
+            .modifiedOn(team.get().getModifiedOn())
+            .build();
 
         return Response.builder()
-                .data(teamResponse)
-                .message("Users added successfully")
-                .build();
+            .data(teamResponse)
+            .message("Users added successfully")
+            .build();
     }
 }
