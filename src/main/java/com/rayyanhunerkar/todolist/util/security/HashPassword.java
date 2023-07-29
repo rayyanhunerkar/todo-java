@@ -7,7 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class HashPassword {
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {

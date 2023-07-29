@@ -17,6 +17,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 @Table(name = "cards", schema = "public")
 public class Card {
     @Id

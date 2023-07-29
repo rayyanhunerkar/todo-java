@@ -11,3 +11,11 @@ services:
       - POSTGRES_DB=todolist
     ports:
       - "5436:5432"
+
+  api:
+    container_name: todo-java
+    platform: linux/amd64
+    build:
+      context: .
+    volumes:
+      - ./ :/app

@@ -3,9 +3,6 @@ package com.rayyanhunerkar.todolist.util.security;
 import com.rayyanhunerkar.todolist.service.UserService;
 import com.rayyanhunerkar.todolist.util.jwt.JwtAuthenticationEntryPoint;
 import com.rayyanhunerkar.todolist.util.jwt.JwtRequestFilter;
-import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,7 +39,7 @@ public class SecurityFilter {
         auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
     }
 
-    private final String[] AUTH_WHITELIST = {
+    private final String[] PUBLIC_URIS = {
             "/auth/**",
             "/swagger-ui/**",
             "/api-docs/**"
@@ -58,7 +55,7 @@ public class SecurityFilter {
                 )
                 .authorizeHttpRequests(
                         authorizeHttpRequests -> authorizeHttpRequests
-                                .requestMatchers(AUTH_WHITELIST)
+                                .requestMatchers(PUBLIC_URIS)
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()

@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin
 public class StateController {
     @Autowired
     private final StateService stateService;
