@@ -10,13 +10,14 @@ import com.rayyanhunerkar.todolist.model.User;
 import com.rayyanhunerkar.todolist.repository.UserRepository;
 import com.rayyanhunerkar.todolist.util.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -56,6 +57,8 @@ public class UserService implements UserDetailsService {
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .modifiedOn(new Timestamp(new Date().getTime()))
+                .createdOn(new Date())
                 .build()
         );
 

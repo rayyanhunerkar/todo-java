@@ -9,7 +9,7 @@ import com.rayyanhunerkar.todolist.model.State;
 import com.rayyanhunerkar.todolist.model.User;
 import com.rayyanhunerkar.todolist.repository.CardRepository;
 import com.rayyanhunerkar.todolist.repository.StateRepository;
-import com.rayyanhunerkar.todolist.util.jwt.JwtTokenUtil;
+import com.rayyanhunerkar.todolist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -27,10 +27,13 @@ public class CardService {
     private final CardRepository cardRepository;
     @Autowired
     private final StateRepository stateRepository;
+    @Autowired
+    private final UserRepository userRepository;
 
-    public CardService(CardRepository cardRepository, StateRepository stateRepository) {
+    public CardService(CardRepository cardRepository, StateRepository stateRepository, UserRepository userRepository) {
         this.cardRepository = cardRepository;
         this.stateRepository = stateRepository;
+        this.userRepository = userRepository;
     }
 
     public Response<Object> createCard(final CardRequest cardRequest) throws Exception {
@@ -38,6 +41,8 @@ public class CardService {
         Card card;
         Optional<State> state;
         State stateEntity;
+        Optional<User> assignedTo;
+        User assignedToEntity = null;
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         state = stateRepository.findById(
@@ -50,6 +55,17 @@ public class CardService {
                     .build();
         }
 
+        if (cardRequest.getAssigned_to() != null) {
+            assignedTo = userRepository.findById(cardRequest.getAssigned_to());
+            if (assignedTo.isEmpty()) {
+                return Response.builder()
+                        .message("User does not exist")
+                        .build();
+            }
+            assignedToEntity = assignedTo.get();
+        }
+
+
         stateEntity = state.get();
 
         try {
@@ -59,6 +75,8 @@ public class CardService {
                     .deadline(cardRequest.getDeadline())
                     .state(stateEntity)
                     .createdBy(user)
+                    .assignedTo(assignedToEntity)
+                    .team(user.getTeam())
                     .modifiedOn(new Timestamp(new Date().getTime()))
                     .createdOn(new Date())
                     .build()
@@ -87,7 +105,9 @@ public class CardService {
 
     public Response<Object> getCards() {
 
-        List<Card> cards = cardRepository.findAll();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Card> cards = cardRepository.findAllByTeamId(user.getTeam().getId());
+
 
         List<CardResponse> responses = cards.stream()
                 .map(card -> {

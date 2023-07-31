@@ -7,9 +7,11 @@ import com.rayyanhunerkar.todolist.POJO.State.StateRequest;
 import com.rayyanhunerkar.todolist.POJO.State.StateResponse;
 import com.rayyanhunerkar.todolist.model.Card;
 import com.rayyanhunerkar.todolist.model.State;
+import com.rayyanhunerkar.todolist.model.User;
 import com.rayyanhunerkar.todolist.repository.CardRepository;
 import com.rayyanhunerkar.todolist.repository.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -35,9 +37,13 @@ public class StateService {
         State state;
         StateNoTasksResponse response;
 
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+
         state = stateRepository.save(State.builder()
                 .name(stateRequest.getName())
                 .description(stateRequest.getDescription())
+                .team(user.getTeam())
                 .createdOn(new Date())
                 .modifiedOn(new Date())
                 .build()
@@ -58,7 +64,8 @@ public class StateService {
     }
 
     public Response<Object> getStates() throws Exception {
-        List<State> states = stateRepository.findAll();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<State> states = stateRepository.findAllByTeamId(user.getTeam().getId());
 
         List<StateResponse> response = states.stream()
                 .map(state -> {
@@ -85,7 +92,6 @@ public class StateService {
                         .modifiedOn(state.getModifiedOn())
                         .build();
                         }
-
                 ).toList();
 
         return Response.builder()

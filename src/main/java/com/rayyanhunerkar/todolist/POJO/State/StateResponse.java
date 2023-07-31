@@ -24,5 +24,4 @@ public class StateResponse {
     private List<CardResponse> tasks;
     private Date createdOn;
     private Date modifiedOn;
-
 }

@@ -23,4 +23,5 @@ public class CardRequest {
     private Date deadline;
     @NotNull
     private UUID state;
+    private UUID assigned_to;
 }
